@@ -12,7 +12,7 @@ def create_grid_with_two_lines(rows, cols, texts):
         texts (list): A list of tuples, where each tuple contains a list of two strings
                       and the color ('green' or 'black').
     """
-    box_width = 11
+    box_width = 12
     border_horizontal = '─'
     border_vertical = '│'
     corner_top_left = '╭'
@@ -83,7 +83,7 @@ texts = []
 for i, j in product(range(cycle_count), range(cycle_length)):
     delta = i * cycle_length + j
     current_date = start_date + timedelta(days=delta)
-    lines = [current_date.strftime('%d %b'), days[j]]
+    lines = [current_date.strftime('%a %d %b'), days[j]]
     color = 'green' if j % 2 == 0 else 'black'
     texts.append((lines, color))
 
