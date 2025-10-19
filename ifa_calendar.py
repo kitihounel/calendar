@@ -1,17 +1,19 @@
 from datetime import datetime, timedelta
 from itertools import product
 
+from rich.cells import cell_len
 
-def create_grid_with_two_lines(rows, cols, texts):
+
+def create_grid(cells):
     """
     Creates a string representation of a grid with two lines of colored and bold text per box.
 
     Args:
-        rows (int): The number of rows in the grid.
-        cols (int): The number of columns in the grid.
-        texts (list): A list of tuples, where each tuple contains a list of two strings
+        cells (list): A list of tuples, where each tuple contains a list of two strings
                       and the color ('green' or 'black').
     """
+    cols = 7
+    rows = len(cells) // cols
     box_width = 12
     border_horizontal = '─'
     border_vertical = '│'
@@ -42,7 +44,7 @@ def create_grid_with_two_lines(rows, cols, texts):
         # First line of content
         row_content_line1 = ''
         for c in range(cols):
-            lines, color = texts[text_index + c]
+            lines, color = cells[text_index + c]
             text_padded = lines[0].center(box_width)
             color_code = blue_bold_color if color == 'blue' else green_bold_color if color == 'green' else ''
             row_content_line1 += border_vertical + color_code + text_padded + reset_color
@@ -52,9 +54,9 @@ def create_grid_with_two_lines(rows, cols, texts):
         # Second line of content
         row_content_line2 = ''
         for c in range(cols):
-            lines, color = texts[text_index + c]
+            lines, color = cells[text_index + c]
             text_padded = lines[1].center(box_width)
-            color_code = green_bold_color if color == 'green' else ''
+            color_code = blue_bold_color if color == 'blue' else green_bold_color if color == 'green' else ''
             row_content_line2 += border_vertical + color_code + text_padded + reset_color
         row_content_line2 += border_vertical + '\n'
         grid_str += row_content_line2
@@ -80,20 +82,25 @@ days = ['Mj', 'Mk', 'Vd', 'Az', 'Vo', 'Ak', 'Bo', 'Hn', 'Fa']
 cycle_length = len(days)
 cycle_count = 3
 
-# We need to 
+# We need to add empty cells for the days before the start date.
 padding = start_date.weekday()
-cells = [('', 'black')] * padding
+cells = [(['', ''], 'black')] * padding
+
 for i, j in product(range(cycle_count), range(cycle_length)):
     delta = i * cycle_length + j
     current_date = start_date + timedelta(days=delta)
-    lines = [current_date.strftime('%a %d %b'), days[j]]
+    content = [current_date.strftime('%a %d %b'), days[j]]
     color = 'blue' if delta % len(days) == 0 else 'green' if j % 2 == 0 else 'black'
-    cells.append((lines, color))
-# We add a 28th day.
-current_date = start_date + timedelta(days=28)
-lines = [current_date.strftime('%a %d %b'), days[0]]
-cells.append((lines, 'blue'))
+    cells.append((content, color))
 
-grid_output = create_grid_with_two_lines(4, 7, cells)
+# We add the firsts day of the 4th cycle.
+current_date = start_date + timedelta(days=cycle_count * cycle_length)
+content = [current_date.strftime('%a %d %b'), days[0]]
+cells.append((content, 'blue'))
+
+# We need to add empty cells for the days after the end date.
+cells.extend([(['', ''], 'black')] * (6 - current_date.weekday()))
+
+grid_output = create_grid(cells)
 print('Here are the next three cycles:')
 print(grid_output)
