@@ -26,6 +26,7 @@ def create_grid_with_two_lines(rows, cols, texts):
     cross = '┼'
 
     green_bold_color = '\033[1;92m'
+    blue_bold_color = '\033[1;34m'
     reset_color = '\033[0m'
 
     grid_str = ''
@@ -43,7 +44,7 @@ def create_grid_with_two_lines(rows, cols, texts):
         for c in range(cols):
             lines, color = texts[text_index + c]
             text_padded = lines[0].center(box_width)
-            color_code = green_bold_color if color == 'green' else ''
+            color_code = blue_bold_color if color == 'blue' else green_bold_color if color == 'green' else ''
             row_content_line1 += border_vertical + color_code + text_padded + reset_color
         row_content_line1 += border_vertical + '\n'
         grid_str += row_content_line1
@@ -79,14 +80,20 @@ days = ['Mj', 'Mk', 'Vd', 'Az', 'Vo', 'Ak', 'Bo', 'Hn', 'Fa']
 cycle_length = len(days)
 cycle_count = 3
 
-texts = []
+# We need to 
+padding = start_date.weekday()
+cells = [('', 'black')] * padding
 for i, j in product(range(cycle_count), range(cycle_length)):
     delta = i * cycle_length + j
     current_date = start_date + timedelta(days=delta)
     lines = [current_date.strftime('%a %d %b'), days[j]]
-    color = 'green' if j % 2 == 0 else 'black'
-    texts.append((lines, color))
+    color = 'blue' if delta % len(days) == 0 else 'green' if j % 2 == 0 else 'black'
+    cells.append((lines, color))
+# We add a 28th day.
+current_date = start_date + timedelta(days=28)
+lines = [current_date.strftime('%a %d %b'), days[0]]
+cells.append((lines, 'blue'))
 
-grid_output = create_grid_with_two_lines(cycle_count, cycle_length, texts)
+grid_output = create_grid_with_two_lines(4, 7, cells)
 print('Here are the next three cycles:')
 print(grid_output)
