@@ -1,8 +1,6 @@
 from datetime import datetime, timedelta
 from itertools import product
 
-from rich.cells import cell_len
-
 
 def create_grid(cells):
     """
