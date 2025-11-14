@@ -68,36 +68,42 @@ def create_grid(cells):
 
 
 date_input = input('Enter the date you saw the moon in yyyy-mm-dd format: ')
-start_date = None
+start_datetime = None
 try:
     # Parse the input string into a datetime object
-    start_date = datetime.strptime(date_input, '%Y-%m-%d')
+    start_datetime = datetime.strptime(date_input, '%Y-%m-%d')
 except ValueError:
     print('Invalid format. Please use yyyy-mm-dd. For example: 2023-12-25')
     exit()
 
-days = ['Mj', 'Mk', 'Vd', 'Az', 'Vo', 'Ak', 'Bo', 'Hn', 'Fa']
-cycle_length = len(days)
+ifa_days = ['Mj', 'Mk', 'Vd', 'Az', 'Vo', 'Ak', 'Bo', 'Hn', 'Fa']
+cycle_length = len(ifa_days)
 cycle_count = 3
 
 # We need to add empty cells for the days before the start date.
-padding = start_date.weekday()
+padding = start_datetime.weekday()
 cells = [(['', ''], 'black')] * padding
 
+today = datetime.now().date()
 for i, j in product(range(cycle_count), range(cycle_length)):
     delta = i * cycle_length + j
-    current_date = start_date + timedelta(days=delta)
-    content = [current_date.strftime('%a %d %b'), days[j]]
-    color = 'blue' if delta % len(days) == 0 else 'green' if j % 2 == 0 else 'black'
+    current_datetime = start_datetime + timedelta(days=delta)
+    if current_datetime.date() == today:
+        content = [current_datetime.strftime('[%d %b]'), ifa_days[j]]
+    else:
+        content = [current_datetime.strftime('%d %b'), ifa_days[j]]
+
+    color = 'blue' if delta % len(ifa_days) == 0 else 'green' if j % 2 == 0 else 'black'
+
     cells.append((content, color))
 
 # We add the first day of the 4th cycle.
-current_date = start_date + timedelta(days=cycle_count * cycle_length)
-content = [current_date.strftime('%a %d %b'), days[0]]
+current_datetime = start_datetime + timedelta(days=cycle_count * cycle_length)
+content = [current_datetime.strftime('%a %d %b'), ifa_days[0]]
 cells.append((content, 'blue'))
 
 # We need to add empty cells for the days after the end date.
-cells.extend([(['', ''], 'black')] * (6 - current_date.weekday()))
+cells.extend([(['', ''], 'black')] * (6 - current_datetime.weekday()))
 
 week_days = [
     (['Mon', ''], 'black'),
