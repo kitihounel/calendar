@@ -91,7 +91,7 @@ for i, j in product(range(cycle_count), range(cycle_length)):
     color = 'blue' if delta % len(days) == 0 else 'green' if j % 2 == 0 else 'black'
     cells.append((content, color))
 
-# We add the firsts day of the 4th cycle.
+# We add the first day of the 4th cycle.
 current_date = start_date + timedelta(days=cycle_count * cycle_length)
 content = [current_date.strftime('%a %d %b'), days[0]]
 cells.append((content, 'blue'))
@@ -99,6 +99,16 @@ cells.append((content, 'blue'))
 # We need to add empty cells for the days after the end date.
 cells.extend([(['', ''], 'black')] * (6 - current_date.weekday()))
 
-grid_output = create_grid(cells)
+week_days = [
+    (['Mon', ''], 'black'),
+    (['Tue', ''], 'black'),
+    (['Wed', ''], 'black'),
+    (['Thu', ''], 'black'),
+    (['Fri', ''], 'black'),
+    (['Sat', ''], 'black'),
+    (['Sun', ''], 'black')
+]
+
+grid_output = create_grid(week_days + cells)
 print('Here are the next three cycles:')
 print(grid_output)
