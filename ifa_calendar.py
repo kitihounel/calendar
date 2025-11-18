@@ -89,7 +89,7 @@ for i, j in product(range(cycle_count), range(cycle_length)):
     delta = i * cycle_length + j
     current_datetime = start_datetime + timedelta(days=delta)
     if current_datetime.date() == today:
-        content = [current_datetime.strftime('[%d %b]'), ifa_days[j]]
+        content = [current_datetime.strftime('*%d %b*'), ifa_days[j]]
     else:
         content = [current_datetime.strftime('%d %b'), ifa_days[j]]
 
