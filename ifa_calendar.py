@@ -99,7 +99,7 @@ for i, j in product(range(cycle_count), range(cycle_length)):
 
 # We add the first day of the 4th cycle.
 current_datetime = start_datetime + timedelta(days=cycle_count * cycle_length)
-content = [current_datetime.strftime('%a %d %b'), ifa_days[0]]
+content = [current_datetime.strftime('%d %b'), ifa_days[0]]
 cells.append((content, 'blue'))
 
 # We need to add empty cells for the days after the end date.
